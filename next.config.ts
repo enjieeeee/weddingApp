@@ -1,0 +1,8 @@
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+  // Placeholder art is SVG; real photos (jpg/webp) are optimised as usual.
+  images: { dangerouslyAllowSVG: true, contentDispositionType: "inline" },
+};
+
+export default nextConfig;
