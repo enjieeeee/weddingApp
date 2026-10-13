@@ -16,7 +16,7 @@ const auth = new google.auth.JWT({
 });
 const sheets = google.sheets({ version: "v4", auth });
 
-// Column order must match the header row: A..K
+// Column order must match the header row: A..J
 const row = [
   randomUUID(),
   new Date().toISOString(),
@@ -25,7 +25,6 @@ const row = [
   "Friend",
   "Chinese",
   "",
-  "Yes",
   "test@example.com",
   "",
   "connectivity test",
@@ -34,7 +33,7 @@ const row = [
 try {
   const res = await sheets.spreadsheets.values.append({
     spreadsheetId: SHEET_ID,
-    range: "RSVPs!A:K",
+    range: "RSVPs!A:J",
     valueInputOption: "RAW",
     insertDataOption: "INSERT_ROWS",
     requestBody: { values: [row] },

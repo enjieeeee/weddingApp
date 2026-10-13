@@ -19,7 +19,6 @@ Your 7 columns are kept in this order. Append these at the end so nothing breaks
 
 | Column | Type | Why |
 |---|---|---|
-| `attending` | Yes/No | Decliners can be recorded, and the guest count is accurate. |
 | `contact` | string | One per party (repeated per row). Lets you chase non-responders. |
 | `table_number` | int, blank | Written back by the future algorithm. |
 | `notes` | string, blank | For manual edits. |
@@ -93,4 +92,4 @@ WeddingApp/
 - Do you want RSVP-by deadline and edit-after-submit? That would need a lookup, which the append-only design does not support.
 
 ## The Assignment
-Create the Google Sheet with the 11 columns above and the service account, and confirm a hand-run `append` works from a local script. This is the riskiest integration, so do it before any UI polish.
+Create the Google Sheet with the 10 columns above and the service account, and confirm a hand-run `append` works from a local script. This is the riskiest integration, so do it before any UI polish.

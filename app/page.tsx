@@ -1,7 +1,7 @@
 import Hero from "@/components/Hero";
 import Details from "@/components/Details";
 import PhotoGallery from "@/components/PhotoGallery";
-import RsvpPlaceholder from "@/components/RsvpPlaceholder";
+import RsvpSection from "@/components/RsvpSection";
 
 export default function Home() {
   return (
@@ -9,7 +9,7 @@ export default function Home() {
       <Hero />
       <Details />
       <PhotoGallery />
-      <RsvpPlaceholder />
+      <RsvpSection />
       <footer className="px-6 py-12 text-center text-sm tracking-widest text-stone">
         EnJie &amp; Jeslin
       </footer>
