@@ -1,17 +1,10 @@
-import Image from "next/image";
+import HeroSlideshow from "@/components/HeroSlideshow";
 import { siteConfig } from "@/lib/site";
 
 export default function Hero() {
   return (
     <section className="relative flex min-h-svh flex-col items-center justify-center px-6 text-center">
-      <Image
-        src={siteConfig.heroImage}
-        alt=""
-        fill
-        priority
-        sizes="100vw"
-        className="-z-10 object-cover opacity-25"
-      />
+      <HeroSlideshow slides={siteConfig.slideshow} />
       <p className="mb-6 text-xs uppercase tracking-[0.35em] text-stone">We are getting married</p>
       <h1 className="font-serif text-6xl font-light leading-tight sm:text-8xl">
         EnJie
