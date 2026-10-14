@@ -5,7 +5,21 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "test:sheet": "node --env-file=.env.local scripts/test-append.mjs"
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:sheet": "node --env-file=.env.local scripts/test-append.mjs",
+    "typecheck": "tsc --noEmit",
+    "lint": "biome check . && python3 -m ruff check .",
+    "format": "biome check --write . && python3 -m ruff format .",
+    "check": "npm run lint && npm run typecheck && npm test",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,mjs,json,css}": "biome check --write --no-errors-on-unmatched --files-ignore-unknown=true",
+    "*.py": [
+      "python3 -m ruff check --fix",
+      "python3 -m ruff format"
+    ]
   },
   "dependencies": {
     "googleapis": "^144.0.0",
@@ -16,13 +30,17 @@
     "zod": "^4.6.5"
   },
   "devDependencies": {
+    "@biomejs/biome": "^2.5.15",
     "@tailwindcss/postcss": "^4.3.3",
     "@types/node": "^26.6.5",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.6.0",
     "postcss": "^8.5.29",
     "tailwindcss": "^4.3.3",
-    "typescript": "^7.0.2"
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.4"
   },
   "engines": {
     "node": ">=20.6"

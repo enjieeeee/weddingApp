@@ -1,9 +1,4 @@
-import {
-  MEAL_PREFERENCES,
-  RELATIONSHIP_TYPES,
-  WEDDING_SIDES,
-  type Attendee,
-} from "@/lib/schema";
+import { type Attendee, MEAL_PREFERENCES, RELATIONSHIP_TYPES, WEDDING_SIDES } from "@/lib/schema";
 
 export type AttendeeDraft = Omit<Attendee, "wedding_side" | "relationship_type"> & {
   wedding_side: Attendee["wedding_side"] | "";
@@ -23,21 +18,34 @@ type Props = {
   onRemove: () => void;
 };
 
-export default function AttendeeFields({ index, value, errors, canRemove, onChange, onRemove }: Props) {
+export default function AttendeeFields({
+  index,
+  value,
+  errors,
+  canRemove,
+  onChange,
+  onRemove,
+}: Props) {
   const id = (n: string) => `a${index}-${n}`;
   return (
     <fieldset className="space-y-5 border-t border-stone/30 pt-6 text-left">
       <legend className="flex w-full items-center justify-between">
         <span className="font-serif text-2xl italic">Guest {index + 1}</span>
         {canRemove && (
-          <button type="button" onClick={onRemove} className="text-xs uppercase tracking-widest text-stone hover:text-ink">
+          <button
+            type="button"
+            onClick={onRemove}
+            className="text-xs uppercase tracking-widest text-stone hover:text-ink"
+          >
             Remove
           </button>
         )}
       </legend>
 
       <div>
-        <label htmlFor={id("name")} className={label}>Full name</label>
+        <label htmlFor={id("name")} className={label}>
+          Full name
+        </label>
         <input
           id={id("name")}
           className={field}
@@ -50,34 +58,48 @@ export default function AttendeeFields({ index, value, errors, canRemove, onChan
 
       <div className="grid gap-5 sm:grid-cols-2">
         <div>
-          <label htmlFor={id("side")} className={label}>Guest of</label>
+          <label htmlFor={id("side")} className={label}>
+            Guest of
+          </label>
           <select
             id={id("side")}
             className={field}
             value={value.wedding_side}
-            onChange={(e) => onChange({ wedding_side: e.target.value as AttendeeDraft["wedding_side"] })}
+            onChange={(e) =>
+              onChange({ wedding_side: e.target.value as AttendeeDraft["wedding_side"] })
+            }
           >
             <option value="">Select</option>
             {WEDDING_SIDES.map((s) => (
-              <option key={s} value={s}>{s}</option>
+              <option key={s} value={s}>
+                {s}
+              </option>
             ))}
           </select>
           {errors.wedding_side && <p className="mt-1 text-sm text-clay">{errors.wedding_side}</p>}
         </div>
         <div>
-          <label htmlFor={id("rel")} className={label}>Relationship</label>
+          <label htmlFor={id("rel")} className={label}>
+            Relationship
+          </label>
           <select
             id={id("rel")}
             className={field}
             value={value.relationship_type}
-            onChange={(e) => onChange({ relationship_type: e.target.value as AttendeeDraft["relationship_type"] })}
+            onChange={(e) =>
+              onChange({ relationship_type: e.target.value as AttendeeDraft["relationship_type"] })
+            }
           >
             <option value="">Select</option>
             {RELATIONSHIP_TYPES.map((r) => (
-              <option key={r} value={r}>{r}</option>
+              <option key={r} value={r}>
+                {r}
+              </option>
             ))}
           </select>
-          {errors.relationship_type && <p className="mt-1 text-sm text-clay">{errors.relationship_type}</p>}
+          {errors.relationship_type && (
+            <p className="mt-1 text-sm text-clay">{errors.relationship_type}</p>
+          )}
         </div>
       </div>
 
@@ -88,7 +110,9 @@ export default function AttendeeFields({ index, value, errors, canRemove, onChan
             <label
               key={m}
               className={`cursor-pointer rounded-full border px-4 py-2 text-sm transition ${
-                value.meal_preference === m ? "border-ink bg-ink text-paper" : "border-stone/50 hover:border-ink"
+                value.meal_preference === m
+                  ? "border-ink bg-ink text-paper"
+                  : "border-stone/50 hover:border-ink"
               }`}
             >
               <input
@@ -105,7 +129,9 @@ export default function AttendeeFields({ index, value, errors, canRemove, onChan
       </div>
 
       <div>
-        <label htmlFor={id("diet")} className={label}>Allergies or dietary notes (optional)</label>
+        <label htmlFor={id("diet")} className={label}>
+          Allergies or dietary notes (optional)
+        </label>
         <input
           id={id("diet")}
           className={field}

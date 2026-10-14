@@ -1,4 +1,4 @@
-import { rsvpSchema, type RsvpInput } from "./schema";
+import { type RsvpInput, rsvpSchema } from "./schema";
 
 export type SubmitResult = { ok: true; count: number } | { ok: false; error: string };
 

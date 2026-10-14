@@ -38,7 +38,12 @@ export default function RsvpForm() {
     if (submitting || inFlight.current) return;
     setFormError("");
 
-    const parsed = rsvpSchema.safeParse({ contact, attendees, website, submission_id: submissionId.current });
+    const parsed = rsvpSchema.safeParse({
+      contact,
+      attendees,
+      website,
+      submission_id: submissionId.current,
+    });
     if (!parsed.success) {
       const next: AttendeeErrors[] = attendees.map(() => ({}));
       let c = "";
@@ -82,10 +87,19 @@ export default function RsvpForm() {
   return (
     <form onSubmit={onSubmit} noValidate className="space-y-8">
       <div className="text-left">
-        <label htmlFor="contact" className="mb-1 block text-xs uppercase tracking-[0.25em] text-stone">
+        <label
+          htmlFor="contact"
+          className="mb-1 block text-xs uppercase tracking-[0.25em] text-stone"
+        >
           Phone or email
         </label>
-        <input id="contact" className={input} autoComplete="email" value={contact} onChange={(e) => setContact(e.target.value)} />
+        <input
+          id="contact"
+          className={input}
+          autoComplete="email"
+          value={contact}
+          onChange={(e) => setContact(e.target.value)}
+        />
         {contactError && <p className="mt-1 text-sm text-clay">{contactError}</p>}
       </div>
 

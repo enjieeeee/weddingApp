@@ -1,5 +1,5 @@
-import Hero from "@/components/Hero";
 import Details from "@/components/Details";
+import Hero from "@/components/Hero";
 import PhotoGallery from "@/components/PhotoGallery";
 import RsvpSection from "@/components/RsvpSection";
 
