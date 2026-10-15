@@ -42,6 +42,7 @@ Config: `vitest.config.mts`. Tests live in `tests/*.test.ts`.
 | `rateLimit.test.ts` | Per-IP rate limit and duplicate submission memory, including expiry. |
 | `rsvp-route.test.ts` | `POST /api/rsvp`: 200, 400, 413, 429, 502, honeypot and idempotent retries. |
 | `sheets.test.ts` | `lib/sheets.ts` with `googleapis` mocked: one append call, `RSVPs!A:J` range, `RAW`/`INSERT_ROWS`, private key `\n` handling, missing env vars, error propagation. |
+| `seating.test.ts` | Deterministic party grouping, table capacity, side counts, and oversized-party handling. |
 
 The route tests mock `@/lib/sheets`, and `sheets.test.ts` mocks `googleapis`, so **no automated test calls the real Google Sheets API or writes to the real sheet**, and none need credentials.
 
