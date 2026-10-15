@@ -126,11 +126,11 @@ export default function SeatingDashboard() {
         {error && <p className="mb-4 text-clay">{error}</p>}
         <section className="mt-8 overflow-x-auto border border-stone/30 bg-white/10 p-2 sm:p-4">
           <div className="mx-auto min-w-[900px]">
-            <div className="mx-auto mb-4 flex w-32 flex-col items-center">
-              <div className="w-full rounded-t-full border border-clay bg-blush px-3 py-2 text-center text-xs uppercase tracking-[0.25em] text-ink">
+            <div className="mx-auto mb-4 flex w-72 flex-col items-center">
+              <div className="w-full rounded-t-full border border-clay bg-blush px-4 py-3 text-center text-xs uppercase tracking-[0.25em] text-ink">
                 Front
               </div>
-              <div className="w-20 rounded-b-lg border-x border-b border-clay bg-clay/20 px-2 py-1 text-center text-[10px] text-stone">
+              <div className="w-60 rounded-b-lg border-x border-b border-clay bg-clay/20 px-4 py-3 text-center text-[10px] text-stone">
                 Podium
               </div>
             </div>
@@ -169,6 +169,9 @@ function Stat({ label, value }: { label: string; value: number }) {
 }
 function TableMap({ table, matches }: { table: Table; matches: (member: Member) => boolean }) {
   const seats = Array.from({ length: 10 }, (_, index) => table.members[index] ?? null);
+  const [hoveredSeat, setHoveredSeat] = useState<number | null>(null);
+  const hoveredMember = hoveredSeat === null ? null : seats[hoveredSeat];
+
   return (
     <section className="relative mx-auto h-[13rem] w-[12rem]">
       <div className="absolute left-1/2 top-1/2 z-10 flex h-20 w-20 -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center rounded-full border-2 border-sage bg-paper text-center shadow-[0_6px_14px_rgba(58,54,49,0.12)]">
@@ -190,13 +193,14 @@ function TableMap({ table, matches }: { table: Table; matches: (member: Member) 
               member
                 ? "border-clay bg-blush text-ink"
                 : "border-dashed border-stone/50 bg-transparent text-stone"
-            } ${active ? "opacity-100" : "opacity-20"}`}
+            } ${active ? "opacity-100" : "opacity-20"} group group-hover:z-[9999] group-focus-within:z-[9999]`}
             style={{ left: `${left}%`, top: `${top}%` }}
-            title={
-              member
-                ? `${member.fullName} · ${member.weddingSide} · ${member.relationshipType} · ${member.mealPreference}`
-                : "Open seat"
-            }
+            tabIndex={member ? 0 : -1}
+            aria-label={member ? `${member.fullName} seat details` : "Open seat"}
+            onMouseEnter={() => member && setHoveredSeat(index)}
+            onMouseLeave={() => setHoveredSeat(null)}
+            onFocus={() => member && setHoveredSeat(index)}
+            onBlur={() => setHoveredSeat(null)}
           >
             {member ? (
               <span className="block max-w-[2.5rem] truncate text-center">{member.fullName}</span>
@@ -206,6 +210,17 @@ function TableMap({ table, matches }: { table: Table; matches: (member: Member) 
           </div>
         );
       })}
+      {hoveredMember && (
+        <div className="pointer-events-none absolute left-1/2 top-1/2 z-[10000] w-48 -translate-x-1/2 -translate-y-1/2 rounded-lg border border-stone/30 bg-ink p-3 text-left text-[10px] leading-relaxed text-paper shadow-xl">
+          <p className="font-semibold text-blush">{hoveredMember.fullName}</p>
+          <p>
+            {hoveredMember.weddingSide} · {hoveredMember.relationshipType}
+          </p>
+          <p>Meal: {hoveredMember.mealPreference}</p>
+          {hoveredMember.notes && <p>Note: {hoveredMember.notes}</p>}
+          {hoveredMember.tableNumber && <p>Table: {hoveredMember.tableNumber}</p>}
+        </div>
+      )}
     </section>
   );
 }
