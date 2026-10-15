@@ -8,6 +8,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:sheet": "node --env-file=.env.local scripts/test-append.mjs",
+    "test:sheet:seed": "node --env-file=.env.local scripts/seed-test-rsvps.mjs",
+    "test:sheet:clean": "node --env-file=.env.local scripts/clean-test-rsvps.mjs",
     "typecheck": "tsc --noEmit",
     "lint": "biome check . && python3 -m ruff check .",
     "format": "biome check --write . && python3 -m ruff format .",

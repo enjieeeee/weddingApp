@@ -25,6 +25,8 @@ Run `npm run check` before pushing. If it passes locally, it should pass for eve
 | `npm run typecheck` | TypeScript check (`tsc --noEmit`). |
 | `npm run check` | `lint` + `typecheck` + `test`, stops at the first failure. |
 | `npm run test:sheet` | Manual script that appends a row to the real Google Sheet. Needs `.env.local`. Not part of `check`. |
+| `npm run test:sheet:seed` | Appends 100 randomized test guests in grouped parties. Needs `.env.local`; not part of `check`. |
+| `npm run test:sheet:clean -- <run-id>` | Deletes only rows created by one seed run. Use the Run ID printed by the seed command. |
 
 ## Vitest
 
@@ -52,6 +54,31 @@ npm run test:sheet
 ```
 
 This appends a test row to the sheet. Delete it afterwards. Run it after changing credentials, the sheet layout or `lib/sheets.ts`.
+
+### Seed and remove about 100 test guests
+
+Use this to exercise the dashboard with realistic party sizes and randomized
+names, sides, relationships and meal preferences:
+
+```bash
+npm run test:sheet:seed
+```
+
+The default is 100 guests. To choose another safe test size:
+
+```bash
+npm run test:sheet:seed -- --count=120
+```
+
+The command prints a **Run ID**. Save it, then clean up only that run with:
+
+```bash
+npm run test:sheet:clean -- 20261016013000-a1b2c3d4
+```
+
+Cleanup requires the exact Run ID, matches both the test contact marker and
+the notes marker, and removes rows from the bottom upward. It does not delete
+normal RSVP rows. Do not edit the generated marker columns before cleanup.
 
 ### Adding a test
 
