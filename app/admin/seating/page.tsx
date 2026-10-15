@@ -124,11 +124,25 @@ export default function SeatingDashboard() {
           />
         </div>
         {error && <p className="mb-4 text-clay">{error}</p>}
-        <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {plan.tables.map((table) => (
-            <TableCard key={table.tableNumber} table={table} matches={matches} />
-          ))}
-        </div>
+        <section className="mt-8 overflow-x-auto border border-stone/30 bg-white/10 p-2 sm:p-4">
+          <div className="mx-auto min-w-[900px]">
+            <div className="mx-auto mb-4 flex w-32 flex-col items-center">
+              <div className="w-full rounded-t-full border border-clay bg-blush px-3 py-2 text-center text-xs uppercase tracking-[0.25em] text-ink">
+                Front
+              </div>
+              <div className="w-20 rounded-b-lg border-x border-b border-clay bg-clay/20 px-2 py-1 text-center text-[10px] text-stone">
+                Podium
+              </div>
+            </div>
+            <div className="grid grid-cols-4 gap-x-3 gap-y-6">
+              {plan.tables.map((table, index) => (
+                <div className={index < 2 ? "col-span-2" : "col-span-1"} key={table.tableNumber}>
+                  <TableMap table={table} matches={matches} />
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
         {plan.unassigned.length > 0 && (
           <section className="mt-8 border border-clay p-5">
             <h2 className="font-serif text-3xl italic">Unassigned parties</h2>
@@ -153,21 +167,45 @@ function Stat({ label, value }: { label: string; value: number }) {
     </div>
   );
 }
-function TableCard({ table, matches }: { table: Table; matches: (member: Member) => boolean }) {
+function TableMap({ table, matches }: { table: Table; matches: (member: Member) => boolean }) {
+  const seats = Array.from({ length: 10 }, (_, index) => table.members[index] ?? null);
   return (
-    <section className="border border-stone/40 bg-white/20 p-5">
-      <div className="flex justify-between">
-        <h2 className="font-serif text-3xl italic">Table {table.tableNumber}</h2>
-        <span className="text-stone">{table.seatsUsed}/10</span>
+    <section className="relative mx-auto h-[13rem] w-[12rem]">
+      <div className="absolute left-1/2 top-1/2 z-10 flex h-20 w-20 -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center rounded-full border-2 border-sage bg-paper text-center shadow-[0_6px_14px_rgba(58,54,49,0.12)]">
+        <h2 className="font-serif text-lg italic">Table {table.tableNumber}</h2>
+        <span className="text-[10px] text-stone">{table.seatsUsed}/10 seats</span>
+        <span className="mt-1 text-[8px] uppercase tracking-wider text-stone">
+          B {table.brideCount} · G {table.groomCount}
+        </span>
       </div>
-      <p className="mt-1 text-xs text-stone">
-        Bride {table.brideCount} · Groom {table.groomCount}
-      </p>
-      <div className="mt-4">
-        {table.members.filter(matches).map((member) => (
-          <MemberRow key={member.rowNumber} member={member} />
-        ))}
-      </div>
+      {seats.map((member, index) => {
+        const angle = (index / 10) * Math.PI * 2 - Math.PI / 2;
+        const left = 50 + Math.cos(angle) * 32;
+        const top = 50 + Math.sin(angle) * 32;
+        const active = member ? matches(member) : true;
+        return (
+          <div
+            key={member?.rowNumber ?? `empty-${index}`}
+            className={`absolute z-20 flex h-9 w-9 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border text-center text-[8px] leading-tight shadow-sm transition-opacity ${
+              member
+                ? "border-clay bg-blush text-ink"
+                : "border-dashed border-stone/50 bg-transparent text-stone"
+            } ${active ? "opacity-100" : "opacity-20"}`}
+            style={{ left: `${left}%`, top: `${top}%` }}
+            title={
+              member
+                ? `${member.fullName} · ${member.weddingSide} · ${member.relationshipType} · ${member.mealPreference}`
+                : "Open seat"
+            }
+          >
+            {member ? (
+              <span className="block max-w-[2.5rem] truncate text-center">{member.fullName}</span>
+            ) : (
+              <span className="text-center">Open</span>
+            )}
+          </div>
+        );
+      })}
     </section>
   );
 }
