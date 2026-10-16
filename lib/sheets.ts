@@ -3,7 +3,6 @@ import { google } from "googleapis";
 
 const TAB = "RSVPs";
 const RANGE = `${TAB}!A:J`;
-const TABLE_COLUMN = "I";
 
 export type SheetRsvpRow = {
   rowNumber: number;
@@ -71,18 +70,4 @@ export async function listRsvpRows(): Promise<SheetRsvpRow[]> {
       },
     ];
   });
-}
-
-export async function writeTableNumbers(assignments: Map<number, number | null>) {
-  const { sheets, sheetId } = client();
-  await Promise.all(
-    [...assignments].map(([rowNumber, tableNumber]) =>
-      sheets.spreadsheets.values.update({
-        spreadsheetId: sheetId,
-        range: `${TAB}!${TABLE_COLUMN}${rowNumber}`,
-        valueInputOption: "RAW",
-        requestBody: { values: [[tableNumber ?? ""]] },
-      }),
-    ),
-  );
 }

@@ -23,6 +23,38 @@ export type SeatingPlan = {
   totalGuests: number;
 };
 
+export function buildStoredSeatingPlan(rows: SheetRsvpRow[]): SeatingPlan {
+  const tables = new Map<number, SheetRsvpRow[]>();
+  const unassignedGroups = new Map<string, SheetRsvpRow[]>();
+  for (const row of rows) {
+    if (row.tableNumber === null) {
+      unassignedGroups.set(row.partyId, [...(unassignedGroups.get(row.partyId) ?? []), row]);
+    } else {
+      tables.set(row.tableNumber, [...(tables.get(row.tableNumber) ?? []), row]);
+    }
+  }
+  const tableNumbers = [...tables.keys()].sort((a, b) => a - b);
+  return {
+    tables: tableNumbers.map((tableNumber) => {
+      const members = tables.get(tableNumber) ?? [];
+      return {
+        tableNumber,
+        members,
+        seatsUsed: members.length,
+        brideCount: members.filter((member) => member.weddingSide === "Bride").length,
+        groomCount: members.filter((member) => member.weddingSide === "Groom").length,
+      };
+    }),
+    unassigned: [...unassignedGroups].map(([partyId, members]) => ({
+      partyId,
+      members,
+      weddingSides: [...new Set(members.map((member) => member.weddingSide))],
+      relationshipTypes: [...new Set(members.map((member) => member.relationshipType))],
+    })),
+    totalGuests: rows.length,
+  };
+}
+
 function partyScore(table: SeatingTable, party: SeatingParty) {
   const size = party.members.length;
   const side = party.weddingSides[0];
