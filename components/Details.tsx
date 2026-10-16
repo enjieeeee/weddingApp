@@ -27,7 +27,7 @@ export default function Details() {
           <iframe
             title={`Map of ${siteConfig.venue}`}
             src={`https://www.google.com/maps/embed/v1/place?key=${mapsKey}&q=${encodeURIComponent(siteConfig.venueAddress)}`}
-            className="h-80 w-full border-0"
+            className="h-100 w-full border-0"
             loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"
             allowFullScreen
