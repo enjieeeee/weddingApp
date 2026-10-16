@@ -1,5 +1,7 @@
 import { siteConfig } from "@/lib/site";
 
+const mapsKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+
 export default function Details() {
   const items = [
     { label: "Date", value: siteConfig.dateLabel },
@@ -20,6 +22,18 @@ export default function Details() {
           </div>
         ))}
       </dl>
+      {mapsKey && (
+        <div className="mt-14 overflow-hidden rounded-lg">
+          <iframe
+            title={`Map of ${siteConfig.venue}`}
+            src={`https://www.google.com/maps/embed/v1/place?key=${mapsKey}&q=${encodeURIComponent(siteConfig.venueAddress)}`}
+            className="h-80 w-full border-0"
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+            allowFullScreen
+          />
+        </div>
+      )}
     </section>
   );
 }
