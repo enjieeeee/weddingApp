@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildSeatingPlan } from "@/lib/seating";
+import { applySeatingAssignments, buildSeatingPlan, buildStoredSeatingPlan } from "@/lib/seating";
 import type { SheetRsvpRow } from "@/lib/sheets";
 
 function row(
@@ -35,6 +35,25 @@ describe("buildSeatingPlan", () => {
     expect(plan.tables[0].members.map((member) => member.fullName)).toEqual(["A", "A2", "B", "C"]);
     expect(plan.tables[0].brideCount).toBe(3);
     expect(plan.tables[0].groomCount).toBe(1);
+  });
+
+  describe("saved seating assignments", () => {
+    it("applies saved assignments and leaves new guests unassigned", () => {
+      const rows = [
+        row(2, "party-a", "A"),
+        row(3, "party-a", "A2"),
+        row(4, "party-b", "B", "Groom"),
+      ];
+      const merged = applySeatingAssignments(rows, [
+        { rowNumber: 2, tableNumber: 3 },
+        { rowNumber: 3, tableNumber: 3 },
+      ]);
+      const plan = buildStoredSeatingPlan(merged);
+
+      expect(plan.tables.map((table) => table.tableNumber)).toEqual([3]);
+      expect(plan.tables[0].members.map((member) => member.fullName)).toEqual(["A", "A2"]);
+      expect(plan.unassigned[0].members.map((member) => member.fullName)).toEqual(["B"]);
+    });
   });
 
   it("does not split parties that exceed capacity", () => {

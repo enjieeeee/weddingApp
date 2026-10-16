@@ -119,7 +119,10 @@ export default function SeatingDashboard() {
   const [seatLayout, setSeatLayout] = useState<SeatLayout>({});
   const [query, setQuery] = useState("");
   const [error, setError] = useState("");
+  const [saveMessage, setSaveMessage] = useState("");
+  const [saving, setSaving] = useState(false);
   const [editMode, setEditMode] = useState(false);
+  const [dirty, setDirty] = useState(false);
   const [draggingRow, setDraggingRow] = useState<number | null>(null);
   const dropHandled = useRef(false);
 
@@ -165,12 +168,15 @@ export default function SeatingDashboard() {
     const rowNumber = Number(event.dataTransfer.getData("text/row-number"));
     if (!Number.isInteger(rowNumber)) return;
     dropHandled.current = true;
+    setSaveMessage("");
+    setError("");
     setPlan((current) => {
       if (!current) return current;
       const moved = moveMember(current, seatLayout, rowNumber, targetTable, targetSeat);
       setSeatLayout(moved.seatLayout);
       return moved.plan;
     });
+    setDirty(true);
     setDraggingRow(null);
   }
 
@@ -182,8 +188,49 @@ export default function SeatingDashboard() {
         setSeatLayout(moved.seatLayout);
         return moved.plan;
       });
+      setDirty(true);
     }
     setDraggingRow(null);
+  }
+
+  async function saveManualLayout() {
+    if (!plan) return;
+    setSaving(true);
+    setSaveMessage("");
+    setError("");
+    const assignments = [
+      ...plan.tables.flatMap((table) =>
+        table.members.map((member) => ({
+          rowNumber: member.rowNumber,
+          tableNumber: table.tableNumber,
+        })),
+      ),
+      ...plan.unassigned.flatMap((party) =>
+        party.members.map((member) => ({ rowNumber: member.rowNumber, tableNumber: null })),
+      ),
+    ];
+    try {
+      const response = await fetch("/api/admin/seating", {
+        method: "PATCH",
+        headers: { "x-admin-token": token, "Content-Type": "application/json" },
+        body: JSON.stringify({ assignments }),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error ?? "Could not save seating configuration.");
+      setPlan(data);
+      setSeatLayout(createSeatLayout(data));
+      setDirty(false);
+      setEditMode(false);
+      setSaveMessage("Seating configuration saved.");
+    } catch (saveError) {
+      const message =
+        saveError instanceof Error ? saveError.message : "Could not save seating configuration.";
+      console.error("Seating configuration save failed:", message);
+      setError(message);
+      setEditMode(true);
+    } finally {
+      setSaving(false);
+    }
   }
 
   function toggleEditMode() {
@@ -191,7 +238,11 @@ export default function SeatingDashboard() {
       setEditMode(true);
       return;
     }
-    setEditMode(false);
+    if (dirty) {
+      void saveManualLayout();
+    } else {
+      setEditMode(false);
+    }
   }
 
   const matches = (member: Member) =>
@@ -248,6 +299,7 @@ export default function SeatingDashboard() {
           />
         </div>
         {error && <p className="mb-4 text-clay">{error}</p>}
+        {saveMessage && <p className="mb-4 text-sage">{saveMessage}</p>}
         <div className="mt-8 grid items-start gap-4 xl:min-w-[1440px] xl:grid-cols-[1152px_15rem]">
           <section className="overflow-x-auto rounded-2xl border border-stone/30 bg-white/10 p-2 sm:p-4">
             <div className="mx-auto min-w-[900px]">
@@ -257,8 +309,9 @@ export default function SeatingDashboard() {
                   <button
                     className="rounded-lg border border-clay px-3 py-2 text-xs uppercase tracking-wider"
                     onClick={toggleEditMode}
+                    disabled={saving}
                   >
-                    {editMode ? "Done editing" : "Edit layout"}
+                    {saving ? "Saving..." : editMode ? "Done editing" : "Edit layout"}
                   </button>
                 </div>
               </div>

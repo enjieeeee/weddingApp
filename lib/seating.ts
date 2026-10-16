@@ -1,4 +1,4 @@
-import type { SheetRsvpRow } from "./sheets";
+import type { SeatingAssignment, SheetRsvpRow } from "./sheets";
 
 export const TABLE_CAPACITY = 10;
 
@@ -53,6 +53,17 @@ export function buildStoredSeatingPlan(rows: SheetRsvpRow[]): SeatingPlan {
     })),
     totalGuests: rows.length,
   };
+}
+
+export function applySeatingAssignments(
+  rows: SheetRsvpRow[],
+  assignments: SeatingAssignment[],
+): SheetRsvpRow[] {
+  const saved = new Map(assignments.map(({ rowNumber, tableNumber }) => [rowNumber, tableNumber]));
+  return rows.map((row) => ({
+    ...row,
+    tableNumber: saved.has(row.rowNumber) ? (saved.get(row.rowNumber) ?? null) : null,
+  }));
 }
 
 function partyScore(table: SeatingTable, party: SeatingParty) {

@@ -9,7 +9,10 @@ and balances Bride/Groom sides where possible. Relationship type is used as a
 secondary packing signal.
 
 Use **Edit layout** to drag guests between tables or into the unassigned area.
-Selecting **Done editing** exits edit mode. Layout changes are local to the
-current dashboard session and are not written back to Google Sheets. Automated
-tests mock Google Sheets; validate against a dedicated test Sheet with
-`npm run test:sheet` before production use.
+Selecting **Done editing** saves the complete layout to the dedicated
+`SeatingConfig` tab and reloads the saved arrangement. The tab uses
+`row_number` and `table_number` columns; blank table numbers represent
+unassigned guests. The dashboard leaves RSVP guests added after a save
+unassigned until they are manually placed. The tab is created automatically
+when the dashboard is opened. Automated tests mock Google Sheets; validate
+against a dedicated test Sheet with `npm run test:sheet` before production use.
