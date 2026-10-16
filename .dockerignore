@@ -1,0 +1,9 @@
+.git
+.husky
+.next
+node_modules
+.env*
+.ruff_cache
+tests
+*.tsbuildinfo
+Dockerfile

@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: wedding-app
+    runtime: docker
+    plan: free
+    healthCheckPath: /api/health
+    envVars:
+      - key: GOOGLE_CLIENT_EMAIL
+        sync: false
+      - key: GOOGLE_PRIVATE_KEY
+        sync: false
+      - key: SHEET_ID
+        sync: false
+      - key: ADMIN_DASHBOARD_TOKEN
+        sync: false
+      - key: NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
+        sync: false

@@ -1,5 +1,21 @@
 # weddingApp
 
+## Deployment (Render, Docker)
+
+1. Push to GitHub. In Render: **New → Blueprint**, pick this repo (`render.yaml`).
+2. Set the secrets: `GOOGLE_CLIENT_EMAIL`, `GOOGLE_PRIVATE_KEY` (keep `\n`
+   escapes or paste real newlines), `SHEET_ID`, `ADMIN_DASHBOARD_TOKEN`,
+   `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY`. The Maps key is inlined at build time, so
+   changing it requires a rebuild.
+3. Service → **Settings → Custom Domains**: add your domain and create the DNS
+   record Render shows. HTTPS is automatic.
+4. Add the domain to the Maps key's HTTP referrer restrictions.
+
+The free plan sleeps when idle; switch `plan` to `starter` for the event.
+The same Dockerfile runs anywhere: `docker build --build-arg
+NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=... -t wedding . && docker run --env-file
+.env.local -p 3000:3000 wedding`.
+
 ## Admin seating dashboard
 
 Set `ADMIN_DASHBOARD_TOKEN` in the deployment environment, then open
